@@ -15,7 +15,7 @@ namespace MISA.AMIS.Common
         public string EmployeeCode { get; set; }
         public string FullName { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public int Gender { get; set; }
+        public string Gender { get; set; }
         public string IdentityNumber { get; set; }
         public DateTime? IdentityDate { get; set; }
         public string IdentityPlace { get; set; }
@@ -36,5 +36,6 @@ namespace MISA.AMIS.Common
         public string BankName { get; set; }
         public string BankBranch { get; set; }
         public string BankPlace { get; set; }
+        public string DepartmentName { get; set; }
     }
 }

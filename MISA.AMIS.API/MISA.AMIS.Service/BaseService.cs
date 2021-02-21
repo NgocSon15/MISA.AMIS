@@ -74,7 +74,8 @@ namespace MISA.AMIS.Service
             if (isValid == true)
             {
                 serviceResult.Success = true;
-                serviceResult.Data = _dbContext.Insert(entity);
+                _dbContext.Insert(entity);
+                serviceResult.Data = "Thêm dữ liệu thành công";
                 return serviceResult;
             }
             else

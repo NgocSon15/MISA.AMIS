@@ -55,6 +55,10 @@ namespace MISA.AMIS.DataLayer
         /// CreatedBy: NNSon (18/02/2021)
         public bool CheckIdentityNumberExist(string identityNumber)
         {
+            if (identityNumber == null)
+            {
+                return false;
+            }
             var employees = dbConnection.Query($"SELECT * FROM Employee WHERE IdentityNumber = '{identityNumber}'");
             if (employees != null)
             {
@@ -74,7 +78,7 @@ namespace MISA.AMIS.DataLayer
         /// CreatedBy: NNSon (18/02/2021)
         public bool CheckEmptyFullName(string fullName)
         {
-            if (fullName == string.Empty)
+            if (fullName == string.Empty || fullName == null)
             {
                 return true;
             }
@@ -89,7 +93,7 @@ namespace MISA.AMIS.DataLayer
         /// CreatedBy: NNSon (18/02/2021)
         public bool CheckEmptyEmployeeCode(string code)
         {
-            if (code == string.Empty)
+            if (code == string.Empty || code == null)
             {
                 return true;
             }

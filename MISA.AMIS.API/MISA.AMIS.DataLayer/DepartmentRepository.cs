@@ -36,7 +36,7 @@ namespace MISA.AMIS.DataLayer
         /// CreatedBy: NNSon (18/02/2021)
         public bool CheckDepartmentNameEmpty(string name)
         {
-            if (name == String.Empty)
+            if (name == String.Empty || name == null)
             {
                 return true;
             }
