@@ -41,13 +41,13 @@ namespace MISA.AMIS.Service
         }
 
         /// <summary>
-        /// Xác thực dữ liệu nhân viên
+        /// Xác thực dữ liệu nhân viên được thêm
         /// </summary>
         /// <param name="employee">object nhân viên cần kiểm tra</param>
         /// <param name="errorMsg">thông tin lỗi nếu có</param>
         /// <returns>true: dữ liệu xác thực đúng; false: sữ liệu xác thực sai</returns>
         /// CreatdBy: NNSON (18/02/2021)
-        public override bool ValidateData(Employee employee, ErrorMsg errorMsg = null)
+        public override bool ValidateAddData(Employee employee, ErrorMsg errorMsg = null)
         {
             var isValid = true;
             // 1. check trùng mã nhân viên: 
@@ -68,11 +68,39 @@ namespace MISA.AMIS.Service
                 errorMsg.UserMsg.Add(MISA.AMIS.Common.Properties.Resources.Erro_Required_FullName);
                 isValid = false;
             }
+            // 4. check số CMND/CCCD trùng:
             if (_employeeRepository.CheckIdentityNumberExist(employee.IdentityNumber) == true)
             {
                 errorMsg.UserMsg.Add(MISA.AMIS.Common.Properties.Resources.Erro_Duplicate_IdentityNumber);
                 isValid = false;
             }    
+
+            return isValid;
+
+        }
+
+        /// <summary>
+        /// Xác thực dữ liệu nhân viên được sửa
+        /// </summary>
+        /// <param name="employee">object nhân viên cần kiểm tra</param>
+        /// <param name="errorMsg">thông tin lỗi nếu có</param>
+        /// <returns>true: dữ liệu xác thực đúng; false: sữ liệu xác thực sai</returns>
+        /// CreatdBy: NNSON (18/02/2021)
+        public override bool ValidateUpdateData(Employee employee, ErrorMsg errorMsg = null)
+        {
+            var isValid = true;
+            // 1. check mã nhân viên trống:
+            if (_employeeRepository.CheckEmptyEmployeeCode(employee.EmployeeCode) == true)
+            {
+                errorMsg.UserMsg.Add(MISA.AMIS.Common.Properties.Resources.Erro_Required_EmployeeCode);
+                isValid = false;
+            }
+            // 2. check họ và tên trống:
+            if (_employeeRepository.CheckEmptyFullName(employee.FullName) == true)
+            {
+                errorMsg.UserMsg.Add(MISA.AMIS.Common.Properties.Resources.Erro_Required_FullName);
+                isValid = false;
+            }
 
             return isValid;
 

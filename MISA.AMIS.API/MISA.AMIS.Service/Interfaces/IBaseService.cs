@@ -13,6 +13,7 @@ namespace MISA.AMIS.Service.Interfaces
         ServiceResult Insert(T entity);
         ServiceResult Update(T entity);
         ServiceResult Delete(string id);
-        bool ValidateData(T entity, ErrorMsg errorMsg = null);
+        bool ValidateAddData(T entity, ErrorMsg errorMsg = null);
+        bool ValidateUpdateData(T entity, ErrorMsg errorMsg = null);
     }
 }

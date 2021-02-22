@@ -69,13 +69,13 @@ namespace MISA.AMIS.Service
             var serviceResult = new ServiceResult();
             var errorMsg = new ErrorMsg();
 
-            var isValid = ValidateData(entity, errorMsg);
+            var isValid = ValidateAddData(entity, errorMsg);
 
             if (isValid == true)
             {
                 serviceResult.Success = true;
                 _dbContext.Insert(entity);
-                serviceResult.Data = "Thêm dữ liệu thành công";
+                serviceResult.Data = MISA.AMIS.Common.Properties.Resources.Add_Success_Msg;
                 return serviceResult;
             }
             else
@@ -97,12 +97,13 @@ namespace MISA.AMIS.Service
             var serviceResult = new ServiceResult();
             var errorMsg = new ErrorMsg();
 
-            var isValid = ValidateData(entity, errorMsg);
+            var isValid = ValidateUpdateData(entity, errorMsg);
 
             if (isValid == true)
             {
                 serviceResult.Success = true;
-                serviceResult.Data = _dbContext.Update(entity);
+                _dbContext.Update(entity);
+                serviceResult.Data = MISA.AMIS.Common.Properties.Resources.Update_Success_Msg;
                 return serviceResult;
             }
             else
@@ -122,19 +123,32 @@ namespace MISA.AMIS.Service
         public virtual ServiceResult Delete(string id)
         {
             var serviceResult = new ServiceResult();
-            serviceResult.Data = _dbContext.Delete(id);
+            _dbContext.Delete(id);
+            serviceResult.Data = MISA.AMIS.Common.Properties.Resources.Delete_Success_Msg;
             serviceResult.Success = true;
             return serviceResult;
         }
 
         /// <summary>
-        /// Xác thực dữ liệu
+        /// Xác thực dữ liệu thêm
         /// </summary>
         /// <param name="entity">object cần kiểm tra</param>
         /// <param name="errorMsg">thông tin lỗi nếu có</param>
         /// <returns></returns>
         /// CreatdBy: NNSON (08/02/2021)
-        public virtual bool ValidateData(T entity, ErrorMsg errorMsg = null)
+        public virtual bool ValidateAddData(T entity, ErrorMsg errorMsg = null)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Xác thực dữ liệu sửa
+        /// </summary>
+        /// <param name="entity">object cần kiểm tra</param>
+        /// <param name="errorMsg">thông tin lỗi nếu có</param>
+        /// <returns></returns>
+        /// CreatdBy: NNSON (08/02/2021)
+        public virtual bool ValidateUpdateData(T entity, ErrorMsg errorMsg = null)
         {
             return true;
         }

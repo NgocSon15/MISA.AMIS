@@ -61,6 +61,24 @@ namespace MISA.AMIS.Common.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Thêm nhân viên thành công.
+        /// </summary>
+        public static string Add_Success_Msg {
+            get {
+                return ResourceManager.GetString("Add_Success_Msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xóa nhân viên thành công.
+        /// </summary>
+        public static string Delete_Success_Msg {
+            get {
+                return ResourceManager.GetString("Delete_Success_Msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tên đơn vị đã tồn tại.
         /// </summary>
         public static string Erro_Duplicate_DepartmentName {
@@ -120,6 +138,15 @@ namespace MISA.AMIS.Common.Properties {
         public static string Exception_Msg {
             get {
                 return ResourceManager.GetString("Exception_Msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sửa dữ liệu nhân viên thành công.
+        /// </summary>
+        public static string Update_Success_Msg {
+            get {
+                return ResourceManager.GetString("Update_Success_Msg", resourceCulture);
             }
         }
     }

@@ -21,7 +21,7 @@ namespace MISA.AMIS.Service
         #endregion
 
         #region Method
-        public override bool ValidateData(Department department, ErrorMsg errorMsg = null)
+        public override bool ValidateAddData(Department department, ErrorMsg errorMsg = null)
         {
             var isValid = true;
 

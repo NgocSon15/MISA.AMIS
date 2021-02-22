@@ -26,12 +26,19 @@
                             <div style="margin-right: 12px">
                                 <label><b>Mã</b> <font color="red">*</font></label>
                                 <br>
-                                <input type="text" class="text-field" style="width:184px" v-model="employee.employeeCode" required>
+                                <input type="text" class="text-field" style="width:184px" 
+                                    v-model="employee.employeeCode" required
+                                    id="txtEmployeeCode"
+                                    ref="focus"
+                                >
                             </div>
                             <div>
                                 <label><b>Tên</b> <font color="red">*</font></label>
                                 <br>
-                                <input type="text" class="text-field" style="width:242px" v-model="employee.fullName" autofocus required>
+                                <input type="text" class="text-field" style="width:242px" 
+                                    v-model="employee.fullName" required
+                                    id="txtFullName"
+                                >
                             </div>
                         </div>
                         <div>
@@ -172,17 +179,25 @@
                 <button class="btn-save" @click="btnSaveOnClick">Cất và thêm</button>
             </div>
         </div>
+        <PopUp @closePopUp="closePopUp" :isHide="isHidePopUp"/>
     </div>
 </template>
 
 <script>
-import axios from 'axios';
+import * as axios from 'axios';
+import PopUp from './EmployeePopUp.vue';
+
 export default {
     props: ['isHide'],
+    components: {
+        PopUp
+    },
     data() {
         return {
+            isHidePopUp: true,
             hideContact: false,
             hideBankAccount: true,
+            magicFlag: true,
             employee: {
                 address: null,
                 bankAccountNumber: null,
@@ -207,364 +222,104 @@ export default {
         }
     },
     methods: {
+        // đóng form khi nhấn nút hủy hoặc x
         btnCancelOnClick() {
             this.$emit('closeDialog',true);
         },
 
+        // chuyển sang phần liên hệ khi nhấn nút liên hệ
         btnContactOnClick() {
             this.hideContact = false;
             this.hideBankAccount = true;
         },
 
+        // chuyển sang phần tài khoản ngân hàng khi nhấn nút tài khoản ngân hàng
         btnBankAccountOnClick() {
             this.hideContact = true;
             this.hideBankAccount = false;
         },
 
+        // đóng pop up thông báo
+        closePopUp(value) {
+            this.isHidePopUp = value;
+        },
+
+        getFocus() {
+            this.$refs["focus"].focus();
+        },
+
+        // lấy dữ liệu khách hàng vào các trường khi nhấn nút sửa
         async getData() { 
             var response = await axios.get("http://localhost:56784/api/v1/Employees/" + this.$attrs.value);
             this.employee = response.data[0];
+            this.employee.dateOfBirth = response.data[0].dateOfBirth.substring(0, 10);
+            this.employee.identityDate = response.data[0].identityDate.substring(0,10);
+            this.getFocus();
         },
 
-        getEmployeeCode() {
+        // đưa dữ liệu các trường về ban đầu khi nhấn nút thêm
+        async resetData() {
             this.employee.employeeCode = this.$attrs.value;
+            this.employee.address = null;
+            this.employee.bankAccountNumber = null;
+            this.employee.bankBranch = null;
+            this.employee.bankName = null;
+            this.employee.bankPlace = null;
+            this.employee.dateOfBirth = null;
+            this.employee.departmentId = "4e272fc4-7875-78d6-7d32-6a1673ffca7c";
+            this.employee.departmentName = null;
+            this.employee.email = null;
+            this.employee.fullName = "";
+            this.employee.gender = null;
+            this.employee.homeNumber = null;
+            this.employee.idEmployee = null;
+            this.employee.identityDate = null;
+            this.employee.identityNumber = null;
+            this.employee.identityPlace = null;
+            this.employee.phoneNumber = null;
+            this.employee.position = null;
+            this.getFocus();
         },
 
+        // thực hiện thêm hoặc sửa dữ liệu tùy thuộc vào id của form đồng thời hiển thị thông báo thành công/lỗi
         async btnSaveOnClick() {
-            await axios.post("http://localhost:56784/api/v1/Employees", this.employee)
-            .then((response) => {
-                alert(response.data);
-            }, (error) => {
-                alert(error.response.data.userMsg);
-            });
+            if (this.$attrs.id == "add") {
+                await axios.post("http://localhost:56784/api/v1/Employees", this.employee)
+                .then((response) => {
+                    this.isHidePopUp = false;
+                    this.$children[0].successMsg = response.data;
+                    this.$children[0].hideAlert = true;
+                    this.$children[0].hideSuccess = false;
+                    this.$children[0].hideDelete = true;
+                }, (error) => {
+                    this.isHidePopUp = false;
+                    this.$children[0].alertMsg = error.response.data.userMsg;
+                    this.$children[0].hideAlert = false;
+                    this.$children[0].hideSuccess = true;
+                    this.$children[0].hideDelete = true;
+                });
+            }
+            else {
+                await axios.put("http://localhost:56784/api/v1/Employees", this.employee)
+                .then((response) => {
+                    this.isHidePopUp = false;
+                    this.$children[0].successMsg = response.data;
+                    this.$children[0].hideAlert = true;
+                    this.$children[0].hideSuccess = false;
+                    this.$children[0].hideDelete = true;
+                }, (error) => {
+                    this.isHidePopUp = false;
+                    this.$children[0].alertMsg = error.response.data.userMsg;
+                    this.$children[0].hideAlert = false;
+                    this.$children[0].hideSuccess = true;
+                    this.$children[0].hideDelete = true;
+                });
+            }
         },
     },
 }
 </script>
 
 <style scoped>
-    .isHide {
-        display: none;
-    }
-
-    .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        background-color: #000000;
-        opacity: 0.3;
-    }
-
-    .dialog {
-        position: fixed;
-        left: calc(50vw - 400px);
-        top: 80px;
-        width: 1000px;
-        background-color: white;
-    }
-
-        .dialog .dialog-header {
-            display: flex;
-            height: 60px;
-        }
-
-            .dialog .dialog-header .dialog-title {
-                font-size: 20px;
-                font-weight: bold;
-                margin-top: 20px;
-                margin-left: 20px;
-                margin-right: 20px;
-            }
-
-            .dialog .dialog-header .checkbox-container{
-                color: #808080;
-                margin-top: 8px;
-                font-size: 16px;
-                display: flex;
-                align-items: center;
-                margin-right: 16px;
-            }
-
-                .dialog .dialog-header .checkbox-container .checkbox{
-                    width: 20px;
-                    height: 20px;
-                    margin-right: 8px;
-                }
-
-            .dialog .dialog-header .btn-close{
-                position: absolute;
-                right: 0;
-                height: 40px;
-                width: 40px;
-                background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -136px -136px;
-                border: none;
-                outline: none;
-                cursor: pointer;
-            }
-
-                .dialog .dialog-header .btn-close:hover{
-                    background-color: #e5e5e5;
-                }
-
-            .dialog .dialog-header .btn-help{
-                position: absolute;
-                right: 40px;
-                height: 32px;
-                width: 32px;
-                border-radius: 50%;
-                background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -84px -140px;
-                border: none;
-                outline: none;
-                cursor: pointer;
-                margin-top: 4px;
-            }
-
-                .dialog .dialog-header .btn-help:hover{
-                    background-color: #e5e5e5;
-                }
-
-        .dialog .dialog-content {
-            padding: 0 20px 0 20px;
-        }
-
-            .dialog .dialog-content .top-content {
-                display: flex;
-            }
-
-                .dialog .dialog-content .top-content .topleft-content {
-                    margin-right: 20px;
-                }
-
-    .text-field {
-        margin-top: 8px;
-        margin-bottom: 16px;
-        height: 34px;
-        width: 454px;
-        outline: none;
-        border: 1px solid #bbbbbb;
-        padding-left: 12px;
-        font-size: 16px;
-    }
-
-        .text-field:focus {
-            border-color: #019160;
-        }
-    
-    .select-field {
-        margin-top: 8px;
-        margin-bottom: 16px;
-        height: 38px;
-        width: 470px;
-        outline: none;
-        border: 1px solid #bbbbbb;
-        padding-left: 12px;
-        font-size: 16px;
-    }
-
-        .select-field:focus {
-            border-color: #019160;
-        }
-    
-    .radio-field {
-        margin-top: 8px;
-        margin-bottom: 16px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        font-size: 16px;
-    }
-
-        .radio-field .radio-container {
-            position: relative;
-            cursor: pointer;
-            padding-left: 32px;
-            margin-right: 16px;
-        }
-
-            .radio-field .radio-container input {
-                position: absolute;
-                opacity: 0;
-                cursor: pointer;
-            }
-
-            .radio-field .radio-container .checkmark {
-                position:absolute;
-                left: 0;
-                top: 0;
-                height: 24px;
-                width: 24px;
-                border: 1px solid #bbbbbb;
-                border-radius: 50%;
-            }
-
-            .radio-field .radio-container:hover input ~ .checkmark {
-                background-color: #e9ebee;
-            }
-
-            .radio-field .radio-container .checkmark:after {
-                content: "";
-                position: absolute;
-                display: none;
-            }
-
-            .radio-field .radio-container input:checked ~ .checkmark:after {
-                display: block;
-            }
-
-            .radio-field .radio-container input:checked ~ .checkmark{
-                border: 1px solid #019160;
-            }
-
-            .radio-field .radio-container .checkmark:after {
-                top: 4px;
-                left: 4px;
-                width: 16px;
-                height: 16px;
-                border-radius: 50%;
-                background: #019160;
-            }
-
-            .dialog .dialog-content .bottom-content .navigator {
-                display: flex;
-            }
-
-            .dialog .dialog-content .bottom-content .navigator .btn-navigate {
-                margin-right: 4px;
-                padding: 8px;
-                border: 1px solid #bbbbbb;
-                cursor: pointer;
-                background-color: #ffffff;
-                outline: none;
-                border-bottom: none;
-                height: 32px;
-                margin-top: 8px;
-                font-size: 14px;
-            }
-
-                .dialog .dialog-content .bottom-content .navigator .btn-navigate:hover {
-                    background-color: #e9ebee;
-                }
-
-            .isChosen{
-                background-color: #99d6ff !important;
-                height: 40px !important;
-                margin-top: 0px !important;
-            }
-
-            .dialog .dialog-content .bottom-content .information-field {
-                height: 200px;
-                border: 1px solid #bbbbbb;
-                padding: 12px;
-                margin-bottom: 32px;
-            }
-
-                .dialog .dialog-content .bottom-content .information-field table {
-                    width: 100%;
-                    border-collapse: collapse;
-                }
-
-                .dialog .dialog-content .bottom-content .information-field table th {
-                    border: 1px solid #bbbbbb;
-                    border-top: none;
-                    text-align: left;
-                    height: 40px;
-                    padding-left: 12px;
-                    background-color: #eeeeee;
-                }
-
-                .dialog .dialog-content .bottom-content .information-field table td {
-                    border: 1px solid #e5e5e5;
-                    border-top: none;
-                    text-align: left;
-                    height: 44px;
-                    padding-left: 12px;
-                }
-
-                .dialog .dialog-content .bottom-content .information-field table tr {
-                    background-color: #fafafa;
-                }
-
-                .table-input {
-                    width: calc(100% - 26px);
-                    height: 32px;
-                    border: 1px solid #e5e5e5;
-                    outline: none;
-                    padding-left: 12px;
-                    font-size: 16px;
-                }
-
-                    .table-input:focus {
-                        border-color: #019160;
-                    }
-
-                .btn-recycle-bin {
-                    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -464px -313px;
-                    width: 20px;
-                    height: 20px;
-                    cursor: pointer;
-                    outline: none;
-                    border: none;
-                }
-
-                .btn-table {
-                    padding: 4px 16px 4px 16px;
-                    border: 1px solid #bbbbbb;
-                    outline: none;
-                    cursor: pointer;
-                    background-color: #ffffff;
-                    border-radius: 4px;
-                    margin-right: 12px;
-                    font-weight: bold;
-                }
-
-                    .btn-table:hover {
-                        background-color: #e9ebee;
-                    }
-
-        .dialog .underline {
-            border-top: 1px solid #e5e5e5;
-            margin: 0 20px 0 20px;
-        }
-
-        .dialog .dialog-footer {
-            margin: 0 20px 0 20px;
-            height: 80px;
-            display: flex;
-            align-items: center;
-        }
-
-            .dialog .dialog-footer .btn-cancel{
-                height: 40px;
-                padding: 0 16px 0 16px;
-                font-weight: bold;
-                cursor: pointer;
-                background-color: #ffffff;
-                outline: none;
-                border: 1px solid #bbbbbb;
-                border-radius: 4px;
-            }
-
-                .dialog .dialog-footer .btn-cancel:hover{
-                    background-color: #e9ebee;
-                }
-
-            .dialog .dialog-footer .btn-save{
-                position: absolute;
-                right: 20px;
-                height: 40px;
-                padding: 0 16px 0 16px;
-                font-weight: bold;
-                cursor: pointer;
-                background-color: #019160;
-                outline: none;
-                border: 1px solid #bbbbbb;
-                border-radius: 4px;
-                color: #ffffff;
-            }
-
-                .dialog .dialog-footer .btn-save:hover{
-                    background-color: #2fbe8e;
-                }
+@import url("../../style/page/employee/employeedialog.css");
 </style>

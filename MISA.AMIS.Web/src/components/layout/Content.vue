@@ -16,13 +16,5 @@ export default {
 </script>
 
 <style scoped>
-    .content {
-        background-color: #e9ebee;
-        position: absolute;
-        top: 60px;
-        left: 200px;
-        width: calc(100% - 232px);
-        height: calc(100vh - 60px);
-        padding: 0 16px 0 16px; 
-    }
+@import url("../../style/layout/content.css");
 </style>
