@@ -132,10 +132,13 @@
                 border: none;
                 outline: none;
                 background-color: #ffffff;
+            }
+
+            .dropdown-content .delete-option{
                 cursor: pointer;
             }
         
-            .dropdown-content .dropdown-option:hover {
+            .dropdown-content .delete-option:hover {
                 background-color: #e5e5e5;
                 color: #019160;
             }

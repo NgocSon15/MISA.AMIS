@@ -166,8 +166,8 @@
                                 </tbody>
                             </table>
                             <div style="display: flex; margin-top: 12px;">
-                                <button class="btn-table">Thêm dòng</button>
-                                <button class="btn-table">Xóa hết dòng</button>
+                                <button class="btn-table" disabled>Thêm dòng</button>
+                                <button class="btn-table" disabled>Xóa hết dòng</button>
                             </div>
                         </div>
                     </div>
@@ -179,25 +179,19 @@
                 <button class="btn-save" @click="btnSaveOnClick">Cất và thêm</button>
             </div>
         </div>
-        <PopUp @closePopUp="closePopUp" :isHide="isHidePopUp"/>
     </div>
 </template>
 
 <script>
 import * as axios from 'axios';
-import PopUp from './EmployeePopUp.vue';
 
 export default {
     props: ['isHide'],
-    components: {
-        PopUp
-    },
     data() {
         return {
             isHidePopUp: true,
             hideContact: false,
             hideBankAccount: true,
-            magicFlag: true,
             employee: {
                 address: null,
                 bankAccountNumber: null,
@@ -245,7 +239,7 @@ export default {
         },
 
         getFocus() {
-            this.$refs["focus"].focus();
+            this.$refs.focus.focus();
         },
 
         // lấy dữ liệu khách hàng vào các trường khi nhấn nút sửa
@@ -258,7 +252,7 @@ export default {
         },
 
         // đưa dữ liệu các trường về ban đầu khi nhấn nút thêm
-        async resetData() {
+        resetData() {
             this.employee.employeeCode = this.$attrs.value;
             this.employee.address = null;
             this.employee.bankAccountNumber = null;
@@ -286,33 +280,23 @@ export default {
             if (this.$attrs.id == "add") {
                 await axios.post("http://localhost:56784/api/v1/Employees", this.employee)
                 .then((response) => {
-                    this.isHidePopUp = false;
-                    this.$children[0].successMsg = response.data;
-                    this.$children[0].hideAlert = true;
-                    this.$children[0].hideSuccess = false;
-                    this.$children[0].hideDelete = true;
+                    this.$toast.success(response.data);
+                    this.$emit('closeDialog', true);
                 }, (error) => {
-                    this.isHidePopUp = false;
-                    this.$children[0].alertMsg = error.response.data.userMsg;
-                    this.$children[0].hideAlert = false;
-                    this.$children[0].hideSuccess = true;
-                    this.$children[0].hideDelete = true;
+                    error.response.data.userMsg.forEach(element => {
+                        this.$toast.error(element);
+                    });
                 });
             }
             else {
                 await axios.put("http://localhost:56784/api/v1/Employees", this.employee)
                 .then((response) => {
-                    this.isHidePopUp = false;
-                    this.$children[0].successMsg = response.data;
-                    this.$children[0].hideAlert = true;
-                    this.$children[0].hideSuccess = false;
-                    this.$children[0].hideDelete = true;
+                    this.$toast.success(response.data);
+                    this.$emit('closeDialog', true);
                 }, (error) => {
-                    this.isHidePopUp = false;
-                    this.$children[0].alertMsg = error.response.data.userMsg;
-                    this.$children[0].hideAlert = false;
-                    this.$children[0].hideSuccess = true;
-                    this.$children[0].hideDelete = true;
+                    error.response.data.userMsg.forEach(element => {
+                        this.$toast.error(element);
+                    });
                 });
             }
         },

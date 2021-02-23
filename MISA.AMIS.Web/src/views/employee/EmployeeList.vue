@@ -9,7 +9,7 @@
         </div>
         <div class="main-content">
             <div class="filter">
-                <input type="text" class="text-box" placeholder="Tìm theo mã, tên nhân viên" @input="searchEmployee" v-model="searchKey">
+                <input type="text" class="text-box" placeholder="Tìm theo mã, tên nhân viên" @keyup.enter="searchEmployee" v-model="searchKey">
                 <div class="icon-search"></div>
             </div>
             <div class="employee-grid">
@@ -42,11 +42,11 @@
                                 <div class="dropdown">
                                     <button class="btn-drop"></button>
                                     <div class="dropdown-content">
-                                        <button class="dropdown-option">Nhân bản</button>
+                                        <button class="dropdown-option" disabled>Nhân bản</button>
                                         <br>
-                                        <button class="dropdown-option" @click="btnDeleteOnClick(employee.employeeId, employee.employeeCode)">Xoá</button>
+                                        <button class="dropdown-option delete-option" @click="btnDeleteOnClick(employee.employeeId, employee.employeeCode)">Xoá</button>
                                         <br>
-                                        <button class="dropdown-option">Ngừng sử dụng</button>
+                                        <button class="dropdown-option" disabled>Ngừng sử dụng</button>
                                     </div>
                                 </div>
                             </td>
@@ -100,7 +100,7 @@ export default {
         async btnAddOnClick() {
             this.dialogId = 'add';
             await this.getMaxEmployeeCode();
-            await this.$children[0].resetData();
+            this.$children[0].resetData();
             this.isHideDialog = false;
         },
 
@@ -117,9 +117,6 @@ export default {
             this.isHidePopUp = false;
             this.$children[1].alertMsg = "Bạn có muốn xóa nhân viên " + code + " không?";
             this.$children[1].employeeId = id;
-            this.$children[1].hideDelete = false;
-            this.$children[1].hideSuccess = true;
-            this.$children[1].hideAlert = true;
         },
 
         // đóng pop up thông báo nếu value = true

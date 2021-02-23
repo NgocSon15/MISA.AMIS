@@ -90,16 +90,11 @@
     padding: 4px 16px 4px 16px;
     border: 1px solid #bbbbbb;
     outline: none;
-    cursor: pointer;
     background-color: #ffffff;
     border-radius: 4px;
     margin-right: 12px;
     font-weight: bold;
 }
-
-    .btn-table:hover {
-        background-color: #e9ebee;
-    }
 
 .btn-cancel{
     height: 40px;
