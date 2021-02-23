@@ -101,7 +101,8 @@ export default {
             this.dialogId = 'add';
             await this.getMaxEmployeeCode();
             this.$children[0].resetData();
-            this.isHideDialog = false;
+            await this.openDialog();
+            this.$children[0].getFocus();
         },
 
         // hiển thị form thông tin nhân viên khi nhấn nút sửa
@@ -109,7 +110,8 @@ export default {
             this.dialogId = 'update';
             await this.getUpdateId(value);
             await this.$children[0].getData();
-            this.isHideDialog = false;
+            await this.openDialog();
+            this.$children[0].getFocus();
         },
 
         // hiển thị pop up thông báo khi nhấn nút xóa
@@ -117,6 +119,10 @@ export default {
             this.isHidePopUp = false;
             this.$children[1].alertMsg = "Bạn có muốn xóa nhân viên " + code + " không?";
             this.$children[1].employeeId = id;
+        },
+
+        openDialog() {
+            this.isHideDialog = false;
         },
 
         // đóng pop up thông báo nếu value = true

@@ -238,17 +238,17 @@ export default {
             this.isHidePopUp = value;
         },
 
-        getFocus() {
-            this.$refs.focus.focus();
-        },
-
         // lấy dữ liệu khách hàng vào các trường khi nhấn nút sửa
         async getData() { 
             var response = await axios.get("http://localhost:56784/api/v1/Employees/" + this.$attrs.value);
             this.employee = response.data[0];
             this.employee.dateOfBirth = response.data[0].dateOfBirth.substring(0, 10);
             this.employee.identityDate = response.data[0].identityDate.substring(0,10);
-            this.getFocus();
+        },
+
+        getFocus() {
+            this.$refs.focus.focus();
+            console.log(this.isHide);
         },
 
         // đưa dữ liệu các trường về ban đầu khi nhấn nút thêm
@@ -272,7 +272,6 @@ export default {
             this.employee.identityPlace = null;
             this.employee.phoneNumber = null;
             this.employee.position = null;
-            this.getFocus();
         },
 
         // thực hiện thêm hoặc sửa dữ liệu tùy thuộc vào id của form đồng thời hiển thị thông báo thành công/lỗi
